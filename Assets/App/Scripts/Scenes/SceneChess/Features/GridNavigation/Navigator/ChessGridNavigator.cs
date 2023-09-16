@@ -27,6 +27,7 @@ namespace App.Scripts.Scenes.SceneChess.Features.GridNavigation.Navigator
             {
                 if ((from.x + from.y) % 2 != (to.x + to.y) % 2) return null;
             }
+
             CellQueue.Enqueue(from);
             Visited.Add(from);
 
@@ -43,10 +44,15 @@ namespace App.Scripts.Scenes.SceneChess.Features.GridNavigation.Navigator
                 }
             }
 
-            if (!VisitedFrom.ContainsKey(to)) return null;
+            if (!VisitedFrom.ContainsKey(to))
+            {
+                Visited.Clear();
+                CellQueue.Clear();
+                VisitedFrom.Clear();
+                return null;
+            }
 
-            Visited.Clear();
-            CellQueue.Clear();
+           
 
             return CreatePath(from, to, unit);
 
@@ -59,7 +65,6 @@ namespace App.Scripts.Scenes.SceneChess.Features.GridNavigation.Navigator
         public List<Vector2Int> GetDirections(ChessUnitType unit )
         {
             List<Vector2Int> Moves = new List<Vector2Int>();
-            int maxDist = unit == ChessUnitType.Queen || unit == ChessUnitType.Rook || unit == ChessUnitType.Bishop ? 8 : 2;
             switch (unit)
             {
                 default:
@@ -72,6 +77,7 @@ namespace App.Scripts.Scenes.SceneChess.Features.GridNavigation.Navigator
                 case ChessUnitType.Queen:
                 case ChessUnitType.King:
                     {
+                        int maxDist = unit == ChessUnitType.Queen ? 8 : 2;
                         for (int i = 1; i < maxDist; i++)
                         {
                             Moves.Add(new Vector2Int(0 , 1 * i));
@@ -99,7 +105,7 @@ namespace App.Scripts.Scenes.SceneChess.Features.GridNavigation.Navigator
                     }
                 case ChessUnitType.Rook:
                     {
-                        for (int i = 1; i < maxDist; i++)
+                        for (int i = 1; i < 8; i++)
                         {
                             Moves.Add(new Vector2Int(0, 1 * i));
                             Moves.Add(new Vector2Int(1 * i, 0));
@@ -110,7 +116,7 @@ namespace App.Scripts.Scenes.SceneChess.Features.GridNavigation.Navigator
                     }
                 case ChessUnitType.Bishop:
                     {
-                        for (int i = 1; i < maxDist; i++)
+                        for (int i = 1; i < 8; i++)
                         {
                             Moves.Add(new Vector2Int(1 * i, 1 * i));
                             Moves.Add(new Vector2Int(-1 * i, 1 * i));
@@ -122,8 +128,9 @@ namespace App.Scripts.Scenes.SceneChess.Features.GridNavigation.Navigator
             }
             return Moves;
         }
-        public bool isChessUnitOnPath(Vector2Int from, Vector2Int to, ChessGrid grid)
+        public bool isChessUnitOnPath(Vector2Int from, Vector2Int to, ChessGrid grid, ChessUnitType unit)
         {
+            if (unit == ChessUnitType.Knight) return false;
             if(from.x == to.x)
             {
                int inc = to.y >= from.y ? 1 : -1; 
@@ -168,7 +175,7 @@ namespace App.Scripts.Scenes.SceneChess.Features.GridNavigation.Navigator
 
                 if (IsWithinGrid(nextCell, grid))
                 {
-                    if (!CellQueue.Contains(nextCell) && !Visited.Contains(nextCell) && !isChessUnitOnPath(current,nextCell,grid))
+                    if (!CellQueue.Contains(nextCell) && !Visited.Contains(nextCell) && !isChessUnitOnPath(current,nextCell,grid,unit))
                     {
                         Visited.Add(nextCell);
                         if (grid.Get(nextCell) == null) Moves.Add(nextCell);
@@ -189,6 +196,8 @@ namespace App.Scripts.Scenes.SceneChess.Features.GridNavigation.Navigator
 
             path.Reverse();
 
+            Visited.Clear();
+            CellQueue.Clear();
             VisitedFrom.Clear();
             return path;
         }
