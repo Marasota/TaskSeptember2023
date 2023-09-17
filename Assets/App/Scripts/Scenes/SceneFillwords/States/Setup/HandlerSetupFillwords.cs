@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using System.Threading.Tasks;
 using App.Scripts.Infrastructure.GameCore.States.SetupState;
 using App.Scripts.Infrastructure.LevelSelection;

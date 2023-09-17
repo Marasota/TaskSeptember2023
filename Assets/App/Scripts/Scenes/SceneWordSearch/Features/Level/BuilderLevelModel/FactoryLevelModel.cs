@@ -2,9 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using App.Scripts.Libs.Factory;
-using App.Scripts.Scenes.SceneFillwords.Features.FillwordModels.View.ViewGridLetters;
 using App.Scripts.Scenes.SceneWordSearch.Features.Level.Models.Level;
-using Unity.VisualScripting;
 
 namespace App.Scripts.Scenes.SceneWordSearch.Features.Level.BuilderLevelModel
 {
